@@ -1,7 +1,7 @@
 use std::net::{TcpListener, TcpStream};
 use std::io::{prelude::*, BufWriter};
 use chrono::prelude::*;
-
+use std::error::Error;
 
 pub fn run_server(ip: &str, port: i32) {
     let endpoint = get_endpoint(ip, port);
@@ -23,34 +23,32 @@ pub fn handle_connection(mut stream: TcpStream) {
         }
         let cmd = char::from(buf[0]);
 
-        handle_cmd(&stream, cmd);
+        if let Err(_) = handle_cmd(&stream, cmd) {
+            break;
+        }
     }
 }
 
-fn handle_cmd(stream: &TcpStream, cmd: char) {
+fn handle_cmd(stream: &TcpStream, cmd: char) -> Result<(), Box<dyn Error>> {
     let mut writer = BufWriter::new(stream);
 
     let now = Local::now();
     if cmd == 't' {
         let time_str = now.format("%H:%M:%S").to_string();
         let time_str = time_str + "\n";
-        if writer.write(time_str.as_bytes()).unwrap_or(0) == 0 {
-            return;
-        }
+        writer.write(time_str.as_bytes())?;
     }
     if cmd == 'd' {
         let date_str = now.format("%Y-%m-%d\n").to_string();
-        if writer.write(date_str.as_bytes()).unwrap_or(0) == 0 {
-            return;
-        }
+        writer.write(date_str.as_bytes())?;
     }
 
-    if let Err(_) = writer.flush(){
-        return;
-    }
+    writer.flush()?;
+
+    Ok(())
 }
 
-fn get_endpoint(ip: &str, port: i32) -> String{
+fn get_endpoint(ip: &str, port: i32) -> String {
     let ip = String::from(ip);
     let port = port.to_string();
     let port = &port[..];
