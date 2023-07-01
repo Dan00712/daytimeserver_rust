@@ -1,7 +1,7 @@
-use std::net::{TcpListener, TcpStream};
-use std::io::{prelude::*, BufWriter};
 use chrono::prelude::*;
 use std::error::Error;
+use std::io::{prelude::*, BufWriter};
+use std::net::{TcpListener, TcpStream};
 
 pub fn run_server(ip: &str, port: i32) {
     let endpoint = get_endpoint(ip, port);
@@ -15,7 +15,7 @@ pub fn run_server(ip: &str, port: i32) {
 }
 
 pub fn handle_connection(mut stream: TcpStream) {
-    loop{
+    loop {
         let mut buf = [0; 1];
         let er = stream.read(&mut buf);
         if let Err(_) = er {

@@ -14,7 +14,7 @@ fn main() {
 }
 
 fn parse_args(args: Vec<String>) -> (String, i32) {
-    if args.len() <= 2 || args.len() > 3{
+    if args.len() <= 2 || args.len() > 3 {
         eprintln!("Invalid amout of Arguments");
         process::exit(1);
     }
