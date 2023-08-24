@@ -1,8 +1,7 @@
-use lib::run_server;
+use daytimeserver::run_server;
 use std::env;
 use std::process;
 
-mod lib;
 
 const DEFAULT_PORT: i32 = 5000;
 

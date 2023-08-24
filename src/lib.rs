@@ -2,6 +2,7 @@ use chrono::prelude::*;
 use std::error::Error;
 use std::io::{prelude::*, BufWriter};
 use std::net::{TcpListener, TcpStream};
+use std::thread;
 
 pub fn run_server(ip: &str, port: i32) {
     let endpoint = get_endpoint(ip, port);
@@ -10,7 +11,9 @@ pub fn run_server(ip: &str, port: i32) {
     for stream in listener.incoming() {
         let stream = stream.unwrap();
 
-        handle_connection(stream);
+        thread::spawn(|| {
+            handle_connection(stream);
+        });
     }
 }
 
